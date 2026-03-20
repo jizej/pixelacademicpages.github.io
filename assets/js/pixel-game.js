@@ -19,27 +19,28 @@
   var FONT = '"Press Start 2P", monospace';
   var SPRITE_PATH = '/assets/sprites/';
 
-  // Positions reference Star-Office-UI room-reference.png layout:
-  // wall area y≈0-130, floor area y≈130-360, objects around perimeter
+  // Room landmarks: wall/floor line ~y=135, pillar ~x=205,
+  // right wall ~x=395, counter bottom-right ~x=455 y=235+.
+  // Floor items origin=(0.5,1) so y = bottom edge. Keep y>=200 to be grounded.
   var NAV_ITEMS = [
     { id: 'bookshelf',  label: 'Publications', url: '/publications/',
-      x: 70,  y: 155, scale: 1, floor: true },
+      x: 50,  y: 240, scale: 0.75, floor: true },      // left wall, grounded on floor
     { id: 'chalkboard', label: 'Teaching',      url: '/teaching/',
-      x: 320, y: 80,  scale: 0.75, floor: false },
+      x: 360, y: 90,  scale: 0.55, floor: false },     // upper wall, right of window
     { id: 'podium',     label: 'Talks',         url: '/talks/',
-      x: 170, y: 250, scale: 0.8, floor: true },
+      x: 140, y: 280, scale: 0.65, floor: true },      // left room open floor
     { id: 'desk',       label: 'Blog',          url: '/year-archive/',
-      x: 370, y: 270, scale: 0.75, floor: true },
+      x: 390, y: 290, scale: 0.55, floor: true },      // right room floor, clear of counter
     { id: 'easel',      label: 'Portfolio',      url: '/portfolio/',
-      x: 530, y: 220, scale: 1, floor: true },
+      x: 300, y: 240, scale: 0.7,  floor: true },      // center floor, right of pillar
     { id: 'cabinet',    label: 'CV',             url: '/cv/',
-      x: 580, y: 155, scale: 0.9, floor: true },
+      x: 545, y: 235, scale: 0.7,  floor: true },      // right side, grounded on floor
   ];
 
   var DECOS = {
-    plant1: { x: 140, y: 170, scale: 0.55, depth: 170 },
-    plant2: { x: 490, y: 150, scale: 0.4,  depth: 50 },
-    cat:    { x: 90,  y: 310, scale: 0.7,  depth: 310 },
+    plant1: { x: 105, y: 250, scale: 0.5,  depth: 250 },  // left floor near bookshelf
+    plant2: { x: 480, y: 205, scale: 0.38, depth: 50 },    // right floor area
+    cat:    { x: 220, y: 315, scale: 0.6,  depth: 315 },   // center-left floor
   };
 
   var THOUGHTS = [
@@ -211,7 +212,7 @@
 
     // ---------- avatar ----------
     placeAvatar: function () {
-      this.avatar = this.add.image(W / 2, 265, 'avatar_0')
+      this.avatar = this.add.image(W / 2, 275, 'avatar_0')
         .setOrigin(0.5, 1).setDepth(265);
     },
 
@@ -247,7 +248,7 @@
 
     drawClock: function (angle) {
       var g = this.clockGfx; g.clear();
-      var cx = 560, cy = 60;
+      var cx = 520, cy = 82;
       g.fillStyle(0x7a5a2e); g.fillCircle(cx, cy, 11);
       g.fillStyle(0xfaf8f0); g.fillCircle(cx, cy, 9);
       g.fillStyle(0x333333);
@@ -321,12 +322,12 @@
         if (dist > 3) {
           if (!this.isWalking) this.isWalking = true;
           this.avatar.x += Math.sign(dx) * 55 * (delta / 1000);
-          this.avatar.y = 265 + Math.sin(time / 200) * 0.8;
+          this.avatar.y = 275 + Math.sin(time / 200) * 0.8;
           this.avatar.setFlipX(dx < 0);
           this.avatar.setDepth(Math.round(this.avatar.y));
         } else {
           this.isWalking = false;
-          this.avatar.y = 265;
+          this.avatar.y = 275;
           this.walkTarget = null;
           this.nextWander = time + 3000 + Math.random() * 5000;
           if (Math.random() < 0.4) {
